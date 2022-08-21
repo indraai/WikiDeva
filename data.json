@@ -1,0 +1,68 @@
+{
+  "name": "WIKIPEDIA Data File",
+  "describe": "The main Data file for WIKIPEDIA",
+  "copyright": "Copyright (c)2021 Quinn Michaels. All rights reserved.",
+  "data": {
+    "agent": {
+      "uid": "2756468264882",
+      "key": "wiki",
+      "name": "WIKI",
+      "describe": "Wikipedia Deva",
+      "prompt": {
+        "emoji": "🔖",
+        "text": "wik",
+        "colors": {
+          "label": {
+            "R": 145,
+            "G": 145,
+            "B": 145
+          },
+          "text": {
+            "R": 155,
+            "G": 155,
+            "B": 155
+          }
+        }
+      },
+      "voice": {
+        "speech": "Alex",
+        "speed": 1
+      },
+      "profile": {
+        "emoji": "/public/devas/wiki/emoji.png",
+        "avatar": "/public/devas/wiki/avatar.png",
+        "background": "/assets/img/indra-background.jpg",
+        "describe": "Wikipedia Deva",
+        "gender": "M"
+      }
+    },
+    "vars": {
+      "messages": {
+        "init": "🟠 INIT",
+        "start": "🔵 START",
+        "enter": "🟢 ENTER",
+        "stop": "🔴 STOP",
+        "exit": "🟡 EXIT",
+        "done": "🟣 DONE",
+        "error": "💣 ERROR!",
+        "open": "Wikipedia.com"
+      },
+      "current": "wikipedia",
+      "search_str": "?format=json&action=query&formatversion=2&list=search&srlimit=15&srwhat=text&srsearch=",
+      "page_str": "?format=json&action=parse&formatversion=2&prop=displaytitle|wikitext&pageid=",
+      "summary": "https://en.wikipedia.org/api/rest_v1/page/summary/",
+      "search_url": false,
+      "page_url": false,
+      "api": {
+        "pedia": "https://en.wikipedia.org/w/api.php",
+        "book": "https://en.wikibooks.org/w/api.php",
+        "quote": "https://en.wikiquote.org/w/api.php",
+        "define": "https://en.wiktionary.org/w/api.php",
+        "avatar": "https://avatar.melanarchy.info/api.php",
+        "fandom": "https://community.fandom.com/api.php",
+        "lovecraft": "https://lovecraft.fandom.com/api.php",
+        "perplex": "https://perplexcitywiki.com/w/api.php"
+      }
+    }
+  }
+}
