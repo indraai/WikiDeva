@@ -56,9 +56,8 @@ const WIKI = new Deva({
       });
     },
     search(text) {
-      const {search_url, search_str} = this.vars;
       return new Promise((resolve, reject) => {
-        this.question(`#web get ${search_url}${search_str}${text}`).then(result => {
+        this.question(`#web get ${this.vars.search_url}`).then(result => {
           const data = result.a.data.data.query.search.map(s => {
             return {
               source: this.vars.current,
@@ -92,7 +91,7 @@ const WIKI = new Deva({
     },
     search(packet) {
       this.vars.current = packet.q.meta.params[1] || this.vars.current;
-      this.vars.search_url = this.vars.api[this.vars.current] + this.vars.search_str + packet.q.text;
+      this.vars.search_url = `${this.vars.api[this.vars.current]}${this.vars.search_str}${packet.q.text}`;
       return this.func.search(packet.q.text);
     },
     page(packet) {
