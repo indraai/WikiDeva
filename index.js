@@ -133,8 +133,14 @@ const WIKI = new Deva({
     },
     help(packet) {
       return new Promise((resolve, reject) => {
-        this.lib.help(packet.q.text, __dirname).then(text => {
-          return resolve({text})
+        this.lib.help(packet.q.text, __dirname).then(help => {
+          return this.question(`#feecting parse ${help}`);
+        }).then(parsed => {
+          return resolve({
+            text: parsed.a.text,
+            html: parsed.a.html,
+            data: parsed.a.data,
+          });
         }).catch(reject);
       });
     }
