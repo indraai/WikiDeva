@@ -1,5 +1,13 @@
-# wikipedia
+## Wiki Deva
 
-This is the main help file for WIKIPEDIA.
+p:This is the main help file for WIKIPEDIA.
 
-Wikipedia Deva
+### Methods
+
+cmd:#wiki ask elon musk
+cmd:#wiki search walt disney
+cmd:#wiki summary Hacker
+cmd:#wiki page Disney
+
+#color = var(--color-green)
+#bgcolor = var(--color-black)

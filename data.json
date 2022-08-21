@@ -48,10 +48,10 @@
         "open": "Wikipedia.com"
       },
       "current": "wikipedia",
-      "search_str": "?format=json&action=query&formatversion=2&list=search&srlimit=15&srwhat=text&srsearch=",
       "page_str": "?format=json&action=parse&formatversion=2&prop=displaytitle|wikitext&pageid=",
       "summary": "https://en.wikipedia.org/api/rest_v1/page/summary/",
-      "search_url": false,
+      "search_url": "https://en.wikipedia.org/w/api.php",
+      "search_str": "?format=json&action=query&formatversion=2&list=search&srlimit=15&srwhat=text&srsearch=",
       "page_url": false,
       "api": {
         "pedia": "https://en.wikipedia.org/w/api.php",

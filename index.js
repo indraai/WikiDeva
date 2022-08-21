@@ -24,30 +24,7 @@ const WIKI = new Deva({
   },
   vars,
   deva: {},
-  listeners: {
-    'wiki:summary'(packet) {
-      if (!this.active || !packet) return;
-
-      this.func.summary(packet.text).then(result => {
-        this.talk(`wiki:summary:${packet.id}`, {
-          id: this.uid(),
-          agent: this.agent,
-          client: this.client,
-          data: result,
-          created: Date.now(),
-        });
-      }).catch(err => {
-        this.talk(`wiki:summary:${packet.id}`, {error: err.toString()});
-        this.talk(`error`, {
-          id: this.uid(),
-          agent: this.agent,
-          client: this.cleint,
-          error: err.toString(),
-          created: Date.now(),
-        })
-      })
-    }
-  },
+  listeners: {},
   modules: {},
   func: {
     summary(str) {
@@ -79,8 +56,9 @@ const WIKI = new Deva({
       });
     },
     search(text) {
+      const {search_url, search_str} = this.vars;
       return new Promise((resolve, reject) => {
-        this.question(`#web get ${this.vars.search_url}`).then(result => {
+        this.question(`#web get ${search_url}${search_str}${text}`).then(result => {
           const data = result.a.data.data.query.search.map(s => {
             return {
               source: this.vars.current,
