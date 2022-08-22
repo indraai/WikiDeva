@@ -27,6 +27,7 @@ const WIKI = new Deva({
   listeners: {},
   modules: {},
   func: {
+
     summary(str) {
       return new Promise((resolve, reject) => {
         const uri = this.vars.summary + str;
@@ -52,62 +53,85 @@ const WIKI = new Deva({
             html:parsed.a.html,
             data,
           });
-        }).catch(reject)
+        }).catch(err => {
+          return this.error(text, err, reject);
+        })
       });
     },
+
     search(text) {
       return new Promise((resolve, reject) => {
+        let data;
         this.question(`#web get ${this.vars.search_url}`).then(result => {
-          const data = result.a.data.data.query.search.map(s => {
-            return {
-              source: this.vars.current,
-              pageid: s.pageid,
-              title: s.title,
-              snippet: s.snippet,
-            }
+          data = result.a.data.query.search.map(s => {
+            return [
+              `\n## ${s.title}`,
+              `p:${s.snippet}`,
+              `cmd[Wiki Page ${s.title}]:#wiki page ${s.pageid}`,
+            ].join('\n');
           });
-          text = `SEARCH: ${text}`;
-          return resolve({text,data});
-        }).catch(reject);
+          return this.question(`#feecting parse:${this.agent.key} ${data.join('\n')}`);
+        }).then(parsed => {
+          const {text,html} = parsed.a;
+          return resolve({
+            text: parsed.a.text,
+            html: parsed.a.html,
+            data,
+          });
+        }).catch(err => {
+          return this.error(text, err, reject);
+        });
       });
     },
+
     page(id) {
       return new Promise((resolve, reject) => {
         this.question(`#web get ${this.vars.page_url}`).then(result => {
-          const text = `PAGE: ${id}`;
-          return resolve({text, data:result.a.text.data.parse})
-        }).catch(reject);
+          console.log('KEYS', Object.keys(result.a.data.parse));
+          return resolve({text:result.a.data.parse.text, html:result.a.data.parse.text, data: result.a.data.parse});
+        }).catch(err => {
+          return this.error(id, err, reject);
+        });
       });
     },
   },
+
   methods: {
     ask(packet) {
       return new Promise((resolve, reject) => {
         this.func.summary(packet.q.text).then(summary => {
           if (summary) resolve(summary);
           return this.func.search(packet.q.text);
-        }).catch(reject);
+        }).catch(err => {
+          return this.error(text, err, reject);
+        });
       });
     },
+
     search(packet) {
       this.vars.current = packet.q.meta.params[1] || this.vars.current;
       this.vars.search_url = `${this.vars.api[this.vars.current]}${this.vars.search_str}${packet.q.text}`;
       return this.func.search(packet.q.text);
     },
+
     page(packet) {
       this.vars.current = packet.q.meta.params[1] || this.vars.current;
       this.vars.page_url = this.vars.api[this.vars.current] + this.vars.page_str + packet.q.text;
       return this.func.page(packet.q.text);
     },
+
     summary(packet) {
       return this.func.summary(packet.q.text);
     },
+
     uid(packet) {
       return Promise.resolve(this.uid());
     },
+
     status(packet) {
       return this.status();
     },
+
     help(packet) {
       return new Promise((resolve, reject) => {
         this.lib.help(packet.q.text, __dirname).then(help => {
@@ -118,7 +142,9 @@ const WIKI = new Deva({
             html: parsed.a.html,
             data: parsed.a.data,
           });
-        }).catch(reject);
+        }).catch(err => {
+          return this.error(text, err, reject);
+        });
       });
     }
   },
