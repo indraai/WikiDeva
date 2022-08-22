@@ -1,4 +1,6 @@
 // Copyright (c)2021 Quinn Michaels
+// The Wiki Deva
+
 const fs = require('fs');
 const path = require('path');
 
@@ -27,7 +29,11 @@ const WIKI = new Deva({
   listeners: {},
   modules: {},
   func: {
-
+    /**************
+    func: summary
+    params: str
+    describe: Return a summary for a specific string value.
+    ***************/
     summary(str) {
       return new Promise((resolve, reject) => {
         const uri = this.vars.summary + str;
@@ -59,6 +65,11 @@ const WIKI = new Deva({
       });
     },
 
+    /**************
+    func: search
+    params: text
+    describe: Return search result based on string input.
+    ***************/
     search(text) {
       return new Promise((resolve, reject) => {
         let data;
@@ -84,6 +95,11 @@ const WIKI = new Deva({
       });
     },
 
+    /**************
+    func: page
+    params: id
+    describe: Return a wiki page based on id parameter.
+    ***************/
     page(id) {
       return new Promise((resolve, reject) => {
         this.question(`#web get ${this.vars.page_url}`).then(result => {
@@ -97,6 +113,12 @@ const WIKI = new Deva({
   },
 
   methods: {
+
+    /**************
+    method: ask
+    params: packet
+    describe: Ask the Wiki a question that will check summary then search results.
+    ***************/
     ask(packet) {
       return new Promise((resolve, reject) => {
         this.func.summary(packet.q.text).then(summary => {
@@ -108,30 +130,60 @@ const WIKI = new Deva({
       });
     },
 
+    /**************
+    method: search
+    params: packet
+    describe: Search method to call the search function to return wiki results.
+    ***************/
     search(packet) {
       this.vars.current = packet.q.meta.params[1] || this.vars.current;
       this.vars.search_url = `${this.vars.api[this.vars.current]}${this.vars.search_str}${packet.q.text}`;
       return this.func.search(packet.q.text);
     },
 
+    /**************
+    method: page
+    params: packet
+    describe: Return a wiki page from the specicif page id passed in from the packet.
+    ***************/
     page(packet) {
       this.vars.current = packet.q.meta.params[1] || this.vars.current;
       this.vars.page_url = this.vars.api[this.vars.current] + this.vars.page_str + packet.q.text;
       return this.func.page(packet.q.text);
     },
 
+    /**************
+    method: summary
+    params: packet
+    describe: Return a summary result from the summary function.
+    ***************/
     summary(packet) {
       return this.func.summary(packet.q.text);
     },
 
+    /**************
+    method: uid
+    params: packet
+    describe: Generate a unique id from the core system.
+    ***************/
     uid(packet) {
       return Promise.resolve(this.uid());
     },
 
+    /**************
+    method: status
+    params: packet
+    describe: Return the current status of the wiki deva.
+    ***************/
     status(packet) {
       return this.status();
     },
 
+    /**************
+    method: help
+    params: packet
+    describe: Return the help files from the Wiki Deva.
+    ***************/
     help(packet) {
       return new Promise((resolve, reject) => {
         this.lib.help(packet.q.text, __dirname).then(help => {
