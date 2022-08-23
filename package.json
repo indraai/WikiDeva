@@ -1,6 +1,6 @@
 {
   "name": "@feecting/wikideva",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "The Wikipedia Deva",
   "main": "index.js",
   "scripts": {
