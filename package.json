@@ -1,5 +1,5 @@
 {
-  "name": "@indra.ai/wikideva",
+  "name": "@feecting/wikideva",
   "version": "0.0.8",
   "description": "The Wikipedia Deva",
   "main": "index.js",
