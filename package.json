@@ -1,5 +1,5 @@
 {
-  "name": "@feecting/wikideva",
+  "name": "@indra.ai/wikideva",
   "version": "0.0.9",
   "description": "The Wikipedia Deva",
   "main": "index.js",
@@ -20,7 +20,7 @@
     "url": "https://github.com/indraai/WikiDeva/issues"
   },
   "dependencies": {
-    "@feecting/deva": "^1.0.25"
+    "@indra.ai/deva": "^1.0.25"
   },
   "homepage": "https://github.com/indraai/WikiDeva#readme"
 }
