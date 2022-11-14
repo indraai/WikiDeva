@@ -38,9 +38,8 @@ const WIKI = new Deva({
       return new Promise((resolve, reject) => {
         const uri = this.vars.summary + str;
         let data;
-        this.question(`#web get ${uri}`).then(result => {
+        this.question(`#web json ${uri}`).then(result => {
           data = result.a.data;
-          console.log('wiki summary', JSON.stringify(result.a.data, null, 2));
 
           const text = [
             `::begin:wiki`,
@@ -73,7 +72,7 @@ const WIKI = new Deva({
     search(text) {
       return new Promise((resolve, reject) => {
         let data;
-        this.question(`#web get ${this.vars.search_url}`).then(result => {
+        this.question(`#web json ${this.vars.search_url}`).then(result => {
           data = result.a.data.query.search.map(s => {
             return [
               `\n## ${s.title}`,
