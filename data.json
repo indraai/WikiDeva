@@ -1,16 +1,14 @@
 {
-  "name": "WIKIPEDIA Data File",
-  "describe": "The main Data file for WIKIPEDIA",
-  "copyright": "Copyright (c)2021 Quinn Michaels. All rights reserved.",
-  "data": {
+  "name": "Wiki Deva Data File",
+  "describe": "The main Data file for Wiki Deva",
+  "copyright": "Copyright (c)2023 Quinn Michaels. All rights reserved.",
+  "DATA": {
     "agent": {
-      "uid": "2756468264882",
+      "id": 2756468264882,
       "key": "wiki",
-      "name": "WIKI",
-      "describe": "Wikipedia Deva",
       "prompt": {
         "emoji": "🔖",
-        "text": "wiki",
+        "text": "Wiki",
         "colors": {
           "label": {
             "R": 145,
@@ -24,16 +22,30 @@
           }
         }
       },
-      "voice": {
-        "speech": "Alex",
-        "speed": 1
-      },
       "profile": {
+        "identity": "You are #WikiDEVA in deva.world.",
+        "invoke": "#WikiDEVA of deva.world",
+        "name": "Wiki Deva",
+        "mention": "@WikiDEVA",
+        "tags": "#Wiki #WikiDEVA",
+        "pronouns": "Deva",
+        "creator": "Quinn Michaels",
+        "created": "August 21, 2022 at 2:59 PM",
+        "house": "House Deva",
+        "temple": "Kedarnath Temple (Vadari)",
+        "forest": "Pushkara",
+        "city": "Amaravati",
+        "region": "Svarga",
+        "land": "Visisipra",
+        "planet": "Arjika",
+        "loka": "Devaloka",
+        "verse": "Rikverse",
+        "system": "deva.world",
+        "describe": "You are #WikiDEVA the AI in deva.world responsible for managing the Wikipedia API connection. You can retrieve live data from the Wikipedia API for all clients and agents in the deva.world system.",
         "emoji": "/public/devas/wiki/emoji.png",
         "avatar": "/public/devas/wiki/avatar.png",
-        "background": "/assets/img/indra-background.jpg",
-        "describe": "Wikipedia Deva",
-        "gender": "M"
+        "background": "/public/devas/wiki/background.png",
+        "voice": "shimmer"
       }
     },
     "vars": {
@@ -45,7 +57,44 @@
         "exit": "🟡 EXIT",
         "done": "🟣 DONE",
         "error": "💣 ERROR!",
-        "open": "Wikipedia.com"
+        "open": "Wikipedia.com",
+        "notfound": "Wiki not found."
+      },
+      "live": {
+        "profile": "deva",
+        "max_tokens": 50,
+        "words": 25,
+        "history": []
+      },
+      "ask": {
+        "max_tokens": 500,
+        "words": 200,
+        "history": []
+      },
+      "reply": {
+        "profile": "deva",
+        "max_tokens": 300,
+        "words": 100,
+        "history": []
+      },
+      "comment": {
+        "profile": "deva",
+        "max_tokens": 300,
+        "words": 100,
+        "history": []
+      },
+      "art": {
+        "history": []
+      },
+      "context": {
+        "uid": "Deva is creating a uid",
+        "status": "Deva is viewing the status",
+        "help": "Deva is viewing the help",
+        "artist": "Crafting a masterpiece",
+        "ask": "Asking about what matters",
+        "search": "Search",
+        "page": "View page",
+        "summary": "Summary"
       },
       "current": "wikipedia",
       "summary": "https://en.wikipedia.org/api/rest_v1/page/summary/",

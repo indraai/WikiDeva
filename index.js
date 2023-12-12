@@ -1,31 +1,34 @@
 // Copyright (c)2021 Quinn Michaels
 // The Wiki Deva
 
-const fs = require('fs');
-const path = require('path');
-
-const data_path = path.join(__dirname, 'data.json');
-const {agent,vars} = require(data_path).data;
-
 const Deva = require('@indra.ai/deva');
+const axios = require('axios');
+const {agent,vars} = require('./data.json').DATA;
+
+const package = require('./package.json');
+const info = {
+  id: package.id,
+  name: package.name,
+  describe: package.description,
+  version: package.version,
+  url: package.homepage,
+  dir: __dirname,
+  git: package.repository.url,
+  bugs: package.bugs.url,
+  author: package.author,
+  license: package.license,
+  copyright: package.copyright,
+};
+
 const WIKI = new Deva({
-  agent: {
-    uid: agent.uid,
-    key: agent.key,
-    name: agent.name,
-    describe: agent.describe,
-    prompt: agent.prompt,
-    voice: agent.voice,
-    profile: agent.profile,
-    translate(input) {
-      return input.trim();
-    },
-    parse(input) {
-      return input.trim();
-    }
-  },
+  info,
+  agent,
   vars,
-  deva: {},
+  utils: {
+    translate(input) {return input.trim();},
+    parse(input) {return input.trim();},
+    process(input) {return input.trim();},
+  },
   listeners: {},
   modules: {},
   func: {
@@ -35,31 +38,42 @@ const WIKI = new Deva({
     describe: Return a summary for a specific string value.
     ***************/
     summary(str) {
+      this.action('func', 'summary');
       return new Promise((resolve, reject) => {
         const uri = this.vars.summary + str;
-        let data;
-        this.question(`#web json ${uri}`).then(result => {
-          data = result.a.data;
-
+        const data = {};
+        axios.get(uri).then(result => {
+          console.log('RESULT', result.data);
+          data.wiki = result.data;
           const text = [
             `::begin:wiki`,
-            `#### ${data.title}`,
+            `#### ${data.wiki.title}`,
             `::begin:summary`,
-            data.thumbnail ? `thumbnail:${data.thumbnail.source}` : '',
-            `describe:${data.extract.replace(/\n|\r/g, ' ')}`,
+            data.wiki.thumbnail ? `image: ${data.wiki.thumbnail.source}` : '',
+            `describe: ${data.wiki.extract.replace(/\n|\r/g, ' ')}`,
             `::end:summary`,
-            `link[${this.vars.messages.open}]:${data.content_urls.desktop.page}`,
+            `link[${this.vars.messages.open}]:${data.wiki.content_urls.desktop.page}`,
             '::end:wiki',
           ].join('\n');
-          return this.question(`#feecting parse ${text}`);
+          return this.question(`${this.askChr}feecting parse ${text}`);
         }).then(parsed => {
+          data.feecting = parsed.a.data;
           return resolve({
             text:parsed.a.text,
             html:parsed.a.html,
             data,
           });
         }).catch(err => {
-          return this.error(text, err, reject);
+          switch (err.response.status) {
+            case 404:
+              return resolve({
+                text: 'not found',
+                html: 'not found',
+                data: err.response.data
+              });
+            default:
+              return this.error(str, err, reject);
+          }
         })
       });
     },
@@ -70,18 +84,22 @@ const WIKI = new Deva({
     describe: Return search result based on string input.
     ***************/
     search(text) {
+      this.action('func', 'search');
       return new Promise((resolve, reject) => {
-        let data;
-        this.question(`#web json ${this.vars.search_url}`).then(result => {
-          data = result.a.data.query.search.map(s => {
+        const data = {};
+        axios.get(this.vars.search_url).then(result => {
+          console.log('SEARCH RESULT', result.data);
+          data.wiki = result.data.query.search.map(s => {
+            console.log('S', s);
             return [
               `\n## ${s.title}`,
               `p:${s.snippet}`,
-              `cmd[Wiki Page ${s.title}]:#wiki page ${s.pageid}`,
+              `cmd:#wiki summary ${s.title}`,
             ].join('\n');
           });
-          return this.question(`#feecting parse:${this.agent.key} ${data.join('\n')}`);
+          return this.question(`${this.askChr}feecting parse ${data.wiki.join('\n')}`);
         }).then(parsed => {
+          data.feecting = parsed.a.data;
           const {text,html} = parsed.a;
           return resolve({
             text: parsed.a.text,
@@ -89,6 +107,7 @@ const WIKI = new Deva({
             data,
           });
         }).catch(err => {
+          console.log('SEARCH WIKI ERROR', err);
           return this.error(text, err, reject);
         });
       });
@@ -100,10 +119,14 @@ const WIKI = new Deva({
     describe: Return a wiki page based on id parameter.
     ***************/
     page(id) {
+      this.action('func', 'page');
       return new Promise((resolve, reject) => {
-        this.question(`#web get ${this.vars.page_url}`).then(result => {
-          console.log('KEYS', Object.keys(result.a.data.parse));
-          return resolve({text:result.a.data.parse.text, html:result.a.data.parse.text, data: result.a.data.parse});
+        axios.get(this.vars.page_url).then(result => {
+          return resolve({
+            text:result.data.parse.text,
+            html:result.data.parse.text,
+            data: result.data.parse
+          });
         }).catch(err => {
           return this.error(id, err, reject);
         });
@@ -112,29 +135,14 @@ const WIKI = new Deva({
   },
 
   methods: {
-
-    /**************
-    method: ask
-    params: packet
-    describe: Ask the Wiki a question that will check summary then search results.
-    ***************/
-    ask(packet) {
-      return new Promise((resolve, reject) => {
-        this.func.summary(packet.q.text).then(summary => {
-          if (summary) resolve(summary);
-          return this.func.search(packet.q.text);
-        }).catch(err => {
-          return this.error(text, err, reject);
-        });
-      });
-    },
-
     /**************
     method: search
     params: packet
     describe: Search method to call the search function to return wiki results.
     ***************/
     search(packet) {
+      this.context('search', packet.q.text);
+      this.action('method', 'search');
       this.vars.current = packet.q.meta.params[1] || this.vars.current;
       this.vars.search_url = `${this.vars.api[this.vars.current]}${this.vars.search_str}${packet.q.text}`;
       return this.func.search(packet.q.text);
@@ -146,6 +154,8 @@ const WIKI = new Deva({
     describe: Return a wiki page from the specicif page id passed in from the packet.
     ***************/
     page(packet) {
+      this.context('page');
+      this.action('method', 'page');
       this.vars.current = packet.q.meta.params[1] || this.vars.current;
       this.vars.page_url = this.vars.api[this.vars.current] + this.vars.page_str + packet.q.text;
       return this.func.page(packet.q.text);
@@ -157,47 +167,13 @@ const WIKI = new Deva({
     describe: Return a summary result from the summary function.
     ***************/
     summary(packet) {
+      this.context('summary', packet.q.text);
+      this.action('method', 'summary');
       return this.func.summary(packet.q.text);
     },
-
-    /**************
-    method: uid
-    params: packet
-    describe: Generate a unique id from the core system.
-    ***************/
-    uid(packet) {
-      return Promise.resolve(this.uid());
-    },
-
-    /**************
-    method: status
-    params: packet
-    describe: Return the current status of the wiki deva.
-    ***************/
-    status(packet) {
-      return this.status();
-    },
-
-    /**************
-    method: help
-    params: packet
-    describe: Return the help files from the Wiki Deva.
-    ***************/
-    help(packet) {
-      return new Promise((resolve, reject) => {
-        this.lib.help(packet.q.text, __dirname).then(help => {
-          return this.question(`#feecting parse ${help}`);
-        }).then(parsed => {
-          return resolve({
-            text: parsed.a.text,
-            html: parsed.a.html,
-            data: parsed.a.data,
-          });
-        }).catch(err => {
-          return this.error(text, err, reject);
-        });
-      });
-    }
+  },
+  onError(err) {
+    console.log('WIKI ERROR', err);
   },
 });
 module.exports = WIKI
