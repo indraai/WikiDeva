@@ -22,7 +22,7 @@
     "url": "https://github.com/indraai/WikiDeva/issues"
   },
   "dependencies": {
-    "@indra.ai/deva": "^1.2.21",
+    "@indra.ai/deva": "^1.2.22",
     "axios": "^1.6.2"
   },
   "homepage": "https://github.com/indraai/WikiDeva#readme"

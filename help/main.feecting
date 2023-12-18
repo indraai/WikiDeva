@@ -6,8 +6,6 @@ image: /public/devas/::agent_key::/main.png
 
 ::profile::
 
-talk:#docs view devas/main:global
-
 ---
 
 ::begin:deva-methods
@@ -26,10 +24,6 @@ example: #::agent_key:: search [topic]
 p: The page method retuns the full page detail for a specific topic.
 example: #::agent_key:: page [topic]
 ::end:deva-methods
-
-talk:#docs view devas/main:methods
-
-talk:#docs view devas/main:features
 
 ---
 

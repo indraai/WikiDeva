@@ -45,7 +45,8 @@
         "emoji": "/public/devas/wiki/emoji.png",
         "avatar": "/public/devas/wiki/avatar.png",
         "background": "/public/devas/wiki/background.png",
-        "voice": "shimmer"
+        "voice": "shimmer",
+        "style": "You are the master of Vedic style artwork and creative ideas. Everything you draw, paint, or create has the eye of a master artist who turns their reality into a Vedic masterpiece."
       }
     },
     "vars": {
@@ -64,7 +65,9 @@
         "profile": "deva",
         "max_tokens": 50,
         "words": 25,
-        "history": []
+        "history": [],
+        "max_chats": 5,
+        "page_token": ""
       },
       "ask": {
         "max_tokens": 500,

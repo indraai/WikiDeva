@@ -1,10 +1,8 @@
 // Copyright (c)2021 Quinn Michaels
 // The Wiki Deva
-
 const Deva = require('@indra.ai/deva');
 const axios = require('axios');
 const {agent,vars} = require('./data.json').DATA;
-
 const package = require('./package.json');
 const info = {
   id: package.id,
@@ -19,7 +17,6 @@ const info = {
   license: package.license,
   copyright: package.copyright,
 };
-
 const WIKI = new Deva({
   info,
   agent,
@@ -77,7 +74,6 @@ const WIKI = new Deva({
         })
       });
     },
-
     /**************
     func: search
     params: text
@@ -147,7 +143,6 @@ const WIKI = new Deva({
       this.vars.search_url = `${this.vars.api[this.vars.current]}${this.vars.search_str}${packet.q.text}`;
       return this.func.search(packet.q.text);
     },
-
     /**************
     method: page
     params: packet
@@ -160,7 +155,6 @@ const WIKI = new Deva({
       this.vars.page_url = this.vars.api[this.vars.current] + this.vars.page_str + packet.q.text;
       return this.func.page(packet.q.text);
     },
-
     /**************
     method: summary
     params: packet
